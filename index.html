@@ -61,6 +61,8 @@
       0 0 15px #ba55d3,
       0 0 30px #a14fc8;
     transition: box-shadow 0.3s ease, transform 0.3s ease;
+    z-index: 10;
+    position: relative;
   }
 
   .btn:hover {
@@ -87,7 +89,7 @@
   <canvas id="particles"></canvas>
   <h1>Ｐｕｒｅ　Ｓｃｒｉｐｔｓ</h1>
   <h2>Your Ultimate Recoil Control Tool</h2>
-  <button class="btn" onclick="alert('Welcome to Pure Scripts!')">Get Started</button>
+  <button id="getStartedBtn" class="btn">Get Started</button>
 
 <script>
   const canvas = document.getElementById('particles');
@@ -157,6 +159,43 @@
   }
 
   init();
+
+  // ==== WebSocket Integration ====
+
+  let ws;
+
+  function connectWS() {
+    ws = new WebSocket('ws://localhost:8765');
+
+    ws.onopen = () => {
+      console.log('WebSocket connected');
+    };
+
+    ws.onmessage = (event) => {
+      console.log('Message from backend:', event.data);
+    };
+
+    ws.onclose = () => {
+      console.log('WebSocket disconnected, reconnecting in 3 seconds...');
+      setTimeout(connectWS, 3000);
+    };
+
+    ws.onerror = (err) => {
+      console.error('WebSocket error:', err);
+      ws.close();
+    };
+  }
+
+  window.onload = connectWS;
+
+  document.getElementById('getStartedBtn').onclick = () => {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send('PRIMARY');
+      alert('Sent PRIMARY command to backend!');
+    } else {
+      alert('WebSocket not connected yet, please wait...');
+    }
+  };
 </script>
 </body>
 </html>
