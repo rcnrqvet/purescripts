@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ｐｕｒｅ　Ｓｃｒｉｐｔｓ</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+
+  /* Background gradient and particles */
+  body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #2e004f, #6a00a3);
+    overflow: hidden;
+    font-family: 'Orbitron', sans-serif;
+    color: #caa0ff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  canvas#particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 0;
+  }
+
+  h1 {
+    font-size: 5rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin: 0;
+    text-shadow:
+      0 0 10px #ba55d3,
+      0 0 20px #ba55d3,
+      0 0 30px #a14fc8;
+  }
+
+  h2 {
+    margin-top: 0.2em;
+    font-weight: 400;
+    font-size: 1.5rem;
+    color: #d1b3ff;
+    text-shadow: 0 0 5px #a14fc8;
+  }
+
+  .btn {
+    margin-top: 3rem;
+    padding: 1rem 3rem;
+    font-size: 1.5rem;
+    color: #fff;
+    background: linear-gradient(45deg, #a14fc8, #ba55d3);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow:
+      0 0 15px #ba55d3,
+      0 0 30px #a14fc8;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+
+  .btn:hover {
+    box-shadow:
+      0 0 25px #d175ff,
+      0 0 50px #d175ff,
+      0 0 80px #e2a2ff;
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 600px) {
+    h1 {
+      font-size: 3rem;
+      letter-spacing: 0.2em;
+    }
+    .btn {
+      font-size: 1.2rem;
+      padding: 0.8rem 2rem;
+    }
+  }
+</style>
+</head>
+<body>
+  <canvas id="particles"></canvas>
+  <h1>Ｐｕｒｅ　Ｓｃｒｉｐｔｓ</h1>
+  <h2>Your Ultimate Recoil Control Tool</h2>
+  <button class="btn" onclick="alert('Welcome to Pure Scripts!')">Get Started</button>
+
+<script>
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let width, height;
+  let particlesArray = [];
+
+  function init() {
+    resize();
+    createParticles();
+    animate();
+  }
+
+  function resize() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+  }
+
+  window.addEventListener('resize', () => {
+    resize();
+  });
+
+  class Particle {
+    constructor() {
+      this.x = Math.random() * width;
+      this.y = Math.random() * height;
+      this.radius = Math.random() * 2 + 1;
+      this.speedX = (Math.random() - 0.5) * 0.5;
+      this.speedY = (Math.random() - 0.5) * 0.5;
+      this.color = 'rgba(186, 85, 211, 0.7)';
+    }
+
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+
+      if (this.x > width || this.x < 0) this.speedX = -this.speedX;
+      if (this.y > height || this.y < 0) this.speedY = -this.speedY;
+    }
+
+    draw() {
+      ctx.beginPath();
+      ctx.fillStyle = this.color;
+      ctx.shadowColor = 'rgba(186, 85, 211, 0.9)';
+      ctx.shadowBlur = 8;
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function createParticles() {
+    particlesArray = [];
+    for(let i=0; i < 100; i++) {
+      particlesArray.push(new Particle());
+    }
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, width, height);
+    particlesArray.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    requestAnimationFrame(animate);
+  }
+
+  init();
+</script>
+</body>
+</html>
